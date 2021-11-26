@@ -537,8 +537,8 @@ else()
     endif()
 
     # For distribution it is more important to be slim than super optimized
-    set_cpp_flag("-Os" RELEASE)
-    set_cpp_flag("-Os" RELWITHDEBINFO)
+    #set_cpp_flag("-Os" RELEASE)
+    #set_cpp_flag("-Os" RELWITHDEBINFO)
 
     set_cpp_flag("-DNDEBUG" RELEASE)
     set_cpp_flag("-DNDEBUG" RELWITHDEBINFO)
