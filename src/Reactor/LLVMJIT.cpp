@@ -20,6 +20,8 @@
 #include "PragmaInternals.hpp"
 #include "Routine.hpp"
 
+#include <iostream>
+
 // TODO(b/143539525): Eliminate when warning has been fixed.
 #ifdef _MSC_VER
 __pragma(warning(push))
@@ -211,6 +213,16 @@ llvm::orc::JITTargetMachineBuilder JITGlobals::getTargetMachineBuilder(rr::Optim
 {
 	llvm::orc::JITTargetMachineBuilder out = jitTargetMachineBuilder;
 	out.setCodeGenOptLevel(toLLVM(optLevel));
+        std::cerr << "\nJIT OPTIMIZATION LEVEL: ";
+        if (optLevel == rr::Optimization::Level::None) std::cerr << "None";
+        else if (optLevel == rr::Optimization::Level::Less) std::cerr << "Less";
+        else if (optLevel == rr::Optimization::Level::Default) std::cerr << "Default";
+        else if (optLevel == rr::Optimization::Level::Aggressive) std::cerr << "Aggressive";
+        else std::cerr << "UNKNOWN";
+        std::cerr << "\n";
+        std::cerr << "TARGET FEATURES:\n";
+        for (auto &f : out.getFeatures().getFeatures()) std::cerr << f << " ";
+        std::cerr << "\n\n";
 
 	return out;
 }
