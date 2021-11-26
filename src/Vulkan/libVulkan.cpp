@@ -51,6 +51,8 @@
 #include "WSI/HeadlessSurfaceKHR.hpp"
 #include "WSI/VkSwapchainKHR.hpp"
 
+#include <stdio.h>
+
 #if defined(VK_USE_PLATFORM_METAL_EXT) || defined(VK_USE_PLATFORM_MACOS_MVK)
 #	include "WSI/MetalSurface.hpp"
 #endif
@@ -145,7 +147,13 @@ std::shared_ptr<marl::Scheduler> getOrCreateScheduler()
 	if(!sptr)
 	{
 		marl::Scheduler::Config cfg;
-		cfg.setWorkerThreadCount(std::min<size_t>(marl::Thread::numLogicalCPUs(), 16));
+                size_t ncores = std::min<size_t>(marl::Thread::numLogicalCPUs(), 16);
+                const char *env_ncores = getenv("SWIFTSHADER_MAX_NCORES");
+                if (env_ncores != nullptr) {
+                    ncores = static_cast<size_t>(atoi(env_ncores));
+                }
+		cfg.setWorkerThreadCount(ncores);
+                fprintf(stderr, "[SWIFTSHADER] Setting number of cores to %zu\n", ncores);
 		cfg.setWorkerThreadInitializer([](int) {
 			sw::CPUID::setFlushToZero(true);
 			sw::CPUID::setDenormalsAreZero(true);
